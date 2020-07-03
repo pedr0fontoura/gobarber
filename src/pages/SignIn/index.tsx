@@ -4,7 +4,9 @@ import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { useAuth } from '../../hooks/AuthContext';
+
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
 import logoSvg from '../../assets/logo.svg';
 
@@ -21,10 +23,11 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(
-    async (data: SignInFormData) => {
+    async (data: SignInFormData): Promise<void> => {
       try {
         formRef.current?.setErrors({});
 
@@ -41,15 +44,27 @@ const SignIn: React.FC = () => {
 
         const { email, password } = data;
 
-        signIn({ email, password });
+        await signIn({ email, password });
+
+        addToast({
+          type: 'success',
+          title: 'Login efetuado com sucesso',
+          description: `Seja bem-vindo ${user.name}`,
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
-          formRef.current?.setErrors(errors);
+          return formRef.current?.setErrors(errors);
         }
+
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description: 'Ocorreu um erro na autenticação',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast, user.name],
   );
 
   return (
