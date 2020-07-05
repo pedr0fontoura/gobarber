@@ -22,11 +22,18 @@ const Route: React.FC<RouteProps> = ({
   return (
     <ReactDOMRoute
       {...rest}
-      render={() => {
+      render={({ location }) => {
         if (isPrivate === !!user) {
           return <Component />;
         }
-        return <Redirect to={{ pathname: isPrivate ? '/' : '/dashboard' }} />;
+        return (
+          <Redirect
+            to={{
+              pathname: isPrivate ? '/' : '/dashboard',
+              state: { from: location },
+            }}
+          />
+        );
       }}
     />
   );
