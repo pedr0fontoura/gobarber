@@ -13,21 +13,24 @@ describe('ListProviderMonthAvailability', () => {
   });
 
   it('should be able to list the month availability from provider', async () => {
-    const createAppointments = [];
+    const appointmentsHours = Array.from(
+      { length: 10 },
+      (_, index) => index + 8,
+    );
 
-    for (let i = 8; i <= 17; i += 1) {
-      createAppointments.push(
-        fakeAppointmentsRepository.create({
-          provider_id: 'user',
-          date: new Date(2020, 4, 20, i, 0, 0),
-        }),
-      );
-    }
+    const createAppointments = appointmentsHours.map(async hour =>
+      fakeAppointmentsRepository.create({
+        provider_id: 'user',
+        user_id: '12345678',
+        date: new Date(2020, 4, 20, hour, 0, 0),
+      }),
+    );
 
     await Promise.all(createAppointments);
 
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
+      user_id: '12345678',
       date: new Date(2020, 4, 21, 8, 0, 0),
     });
 
