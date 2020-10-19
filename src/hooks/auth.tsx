@@ -3,7 +3,7 @@ import api from '../services/api';
 
 interface AuthContextData {
   user?: object;
-  signIn(credentials: SignInCredentials): Promise<void>;
+  signIn(credentials: SignInCredentials): Promise<string>;
   signOut(): void;
 }
 
@@ -43,6 +43,8 @@ const AuthProvider: React.FC = ({ children }) => {
     localStorage.setItem('@GoBarber:user', JSON.stringify(user));
 
     setData({ token, user });
+
+    return user.name;
   }, []);
 
   const signOut = useCallback(() => {
