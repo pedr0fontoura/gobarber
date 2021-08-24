@@ -74,7 +74,7 @@ $ yarn
 $ yarn start
 ```
 
-For the **mobile** app, follow this steps:
+For the **mobile** app, follow these steps:
 ```bash
 
 # Navigate to the mobile dir
